@@ -5,7 +5,7 @@ export const mapStore = create((set) => ({
     mapZoom: 13,
     mapMarker: [],
     cityBounds: null,
-    addressMarker: { markerCoords: null, address: '', streets: [] },
+    addressMarker: { markerCoords: null, address: '', streets: [], isLoading: false },
     setMapCenter: (coords) => set(() => ({ mapCenter: coords })),
     setMapZoom: (zoomLevel) => set({ mapZoom: zoomLevel }),
     setMapMarker: (coordsMarker) => set({ mapMarker: coordsMarker }),
@@ -17,5 +17,9 @@ export const mapStore = create((set) => ({
     setAddressMarkerAddress: (house_number, road) =>
         set((state) => ({
             addressMarker: { ...state.addressMarker, address: `${road} ${house_number}` }
-        }))
+        })),
+    setAddressLoading: (loading) => set(state => ({
+        addressMarker: { ...state.addressMarker, isLoading: loading }
+    }))
+
 }))
