@@ -3,8 +3,6 @@ import { useEffect } from 'react'
 import { useMap } from 'react-leaflet'
 export function Map() {
   const map = useMap()
-  // const [query, setQuery] = useState('')
-  // const [results, setResults] = useState([])
   useEffect(() => {
     // const fetchData = async () => {
     //   const provider = new OpenStreetMapProvider()
@@ -22,7 +20,7 @@ export function Map() {
       }),
       style: 'bar',
       autoComplete: true,
-      autoCompleteDelay: 400
+      autoCompleteDelay: 300
     }).addTo(map)
 
     return () => {

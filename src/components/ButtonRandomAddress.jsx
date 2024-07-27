@@ -1,13 +1,14 @@
-export function ButtonRandomAddress({ bounds, setBounds, setAddressToShow }) {
-  const doing = () => {
+import { mapStore } from '../store/mapStore'
+
+export function ButtonRandomAddress({ bounds }) {
+  const { setAddressMarkerAddress, setAddressMarkerCoords } = mapStore()
+  const handleGetRandomAddress = () => {
     function getRandomCoordinate(bounds) {
-      console.log('los bounds', bounds)
       const lat = Math.random() * (bounds?.[0][0] - bounds?.[1][0]) + bounds?.[1][0]
       const lon = Math.random() * (bounds?.[0][1] - bounds?.[1][1]) + bounds?.[1][1]
       return { lat, lon }
     }
     const { lat, lon } = getRandomCoordinate(bounds)
-    console.log(lat, lon)
 
     fetch(
       `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1`
@@ -17,13 +18,13 @@ export function ButtonRandomAddress({ bounds, setBounds, setAddressToShow }) {
         console.log('data', data)
         if (data && data.address) {
           const { road, house_number, city, country } = data.address
+          const { lat, lon } = data
           if (road && house_number) {
-            const addressForUser = `${road} ${house_number}`
-            const address = `${house_number} ${road}, ${city}, ${country}`
-            setAddressToShow(addressForUser)
+            setAddressMarkerAddress(house_number, road)
+            setAddressMarkerCoords(lat, lon)
           } else {
-            doing()
             console.log('No se encontró ninguna dirección.')
+            handleGetRandomAddress()
           }
         }
       })
@@ -36,7 +37,7 @@ export function ButtonRandomAddress({ bounds, setBounds, setAddressToShow }) {
     <button
       className='px-5 py-3 text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm text-center  dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800'
       type='button'
-      onClick={doing}>
+      onClick={handleGetRandomAddress}>
       Get random address
     </button>
   )

@@ -3,16 +3,15 @@ import { Map } from '../components/Map'
 import { useEffect, useRef, useState } from 'react'
 import { CityBounds } from '../components/CityBounds'
 import { ButtonRandomAddress } from '../components/ButtonRandomAddress'
+import { mapStore } from '../store/mapStore'
 
 export function Game() {
-  const [latitude, setLatitude] = useState(undefined)
-  const [longitude, setLongitude] = useState(undefined)
-  const [bounds, setBounds] = useState(undefined)
-  const [addressToShow, setAddressToShow] = useState('')
+  const { mapCenter, setMapCenter, mapZoom, cityBounds, addressMarker } = mapStore()
   useEffect(() => {
     window.navigator.geolocation.getCurrentPosition((e) => {
-      setLatitude(e.coords.latitude)
-      setLongitude(e.coords.longitude)
+      let lat = e.coords.latitude
+      let lon = e.coords.longitude
+      setMapCenter([lat, lon])
     })
   }, [])
 
@@ -24,35 +23,38 @@ export function Game() {
         </h1>
       </div>
       <div className='w-full h-96 px-5 flex justify-center items-center'>
-        {latitude !== undefined && longitude !== undefined ? (
+        {mapCenter ? (
           <MapContainer
-            center={[latitude, longitude]}
-            zoom={13}
+            center={mapCenter}
+            zoom={mapZoom}
             scrollWheelZoom={false}
             className='h-full w-full'>
             <TileLayer
               attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
             />
-            <Marker position={[latitude, longitude]}>
+            <Marker position={mapCenter}>
               <Popup>
                 A pretty CSS3 popup. <br /> Easily customizable.
               </Popup>
             </Marker>
-            <Map setLatitude={setLatitude} setLongitude={setLongitude} />
-            <CityBounds bounds={bounds} setBounds={setBounds} />
+            {addressMarker.markerCoords && (
+              <Marker position={addressMarker.markerCoords}>
+                <Popup>
+                  A pretty CSS3 popup. <br /> Easily customizable.
+                </Popup>
+              </Marker>
+            )}
+            <Map />
+            <CityBounds />
           </MapContainer>
         ) : (
           <p className='text-gray-900 dark:text-white'>Cargando mapa...</p>
         )}
       </div>
       <div className='w-full px-5 py-5 flex flex-col justify-center gap-5'>
-        <span className='w-fit mx-auto text-gray-900 dark:text-white'>{addressToShow}</span>
-        <ButtonRandomAddress
-          bounds={bounds}
-          setBounds={setBounds}
-          setAddressToShow={setAddressToShow}
-        />
+        <span className='w-fit mx-auto text-gray-900 dark:text-white'>{addressMarker.address}</span>
+        <ButtonRandomAddress bounds={cityBounds} />
       </div>
     </section>
   )
