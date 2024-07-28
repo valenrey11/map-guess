@@ -4,9 +4,11 @@ import { useEffect, useRef, useState } from 'react'
 import { CityBounds } from '../components/CityBounds'
 import { ButtonRandomAddress } from '../components/ButtonRandomAddress'
 import { mapStore } from '../store/mapStore'
+import { useFetchAllStreets } from '../hooks/useFetchAllStreets'
 
 export function Game() {
-  const { mapCenter, setMapCenter, mapZoom, cityBounds, addressMarker } = mapStore()
+  const { getAllSttreetsFromBounds } = useFetchAllStreets()
+  const { mapCenter, setMapCenter, mapZoom, cityBounds, boundingBox, addressMarker } = mapStore()
   useEffect(() => {
     window.navigator.geolocation.getCurrentPosition((e) => {
       let lat = e.coords.latitude
@@ -14,6 +16,9 @@ export function Game() {
       setMapCenter([lat, lon])
     })
   }, [])
+  useEffect(() => {
+    if (boundingBox !== null) getAllSttreetsFromBounds(boundingBox)
+  }, [boundingBox])
 
   return (
     <section className='bg-white dark:bg-gray-900'>
@@ -35,14 +40,12 @@ export function Game() {
             />
             <Marker position={mapCenter}>
               <Popup>
-                A pretty CSS3 popup. <br /> Easily customizable.
+                Tu ubicación. <br /> Aproximada.
               </Popup>
             </Marker>
             {addressMarker.markerCoords && (
               <Marker position={addressMarker.markerCoords}>
-                <Popup>
-                  A pretty CSS3 popup. <br /> Easily customizable.
-                </Popup>
+                <Popup>{addressMarker.address}</Popup>
               </Marker>
             )}
             <Map />
