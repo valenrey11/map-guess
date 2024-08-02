@@ -51,9 +51,12 @@ export const mapStore = create((set) => ({
     set((state) => ({
       addressMarker: { ...state.addressMarker, isLoading: loading }
     })),
-  setAddressMarkerCornerStreets: (loading) =>
+  setAddressMarkerCornerStreets: (street) =>
     set((state) => ({
-      addressMarker: { ...state.addressMarker, isLoading: loading }
+      addressMarker: {
+        ...state.addressMarker,
+        cornerStreets: [...state.addressMarker.cornerStreets, street]
+      }
     })),
   setSmallerCorner: (lat, lon) =>
     set((state) => ({
