@@ -3,7 +3,6 @@ export function fetchRandomAddress(lat, lon) {
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1`
     )
         .then((response) => {
-            console.log(response);
             if (!response.ok) {
                 throw new Error('Error al obtener la dirección')
             }
