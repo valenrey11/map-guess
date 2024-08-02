@@ -1,8 +1,8 @@
-import { useMap } from 'react-leaflet'
 import { fetchAllStreets } from '../services/fetchAllStreets'
+import { mapStore } from '../store/mapStore'
 
 export function useFetchAllStreets() {
-  const { setStreetsFromBounds } = useMap()
+  const { setStreetsFromBounds } = mapStore()
   const customHook = (bounds) => {
     return fetchAllStreets(bounds)
       .then((data) => {
@@ -14,8 +14,10 @@ export function useFetchAllStreets() {
         })
         setStreetsFromBounds(Array.from(streetNames))
       })
-      .catch((error) => {})
-      .finally(() => {})
+      .catch((error) => {
+        console.log(error)
+      })
+      .finally(() => { })
   }
   return { getAllSttreetsFromBounds: customHook }
 }

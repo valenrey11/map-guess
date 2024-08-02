@@ -1,10 +1,11 @@
-import { MapContainer, Marker, Polygon, Popup, TileLayer } from 'react-leaflet'
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
 import { Map } from '../components/Map'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect } from 'react'
 import { CityBounds } from '../components/CityBounds'
 import { ButtonRandomAddress } from '../components/ButtonRandomAddress'
 import { mapStore } from '../store/mapStore'
 import { useFetchAllStreets } from '../hooks/useFetchAllStreets'
+import { StreetCheckPanel } from '../components/StreetCheckPanel'
 
 export function Game() {
   const { getAllSttreetsFromBounds } = useFetchAllStreets()
@@ -27,7 +28,7 @@ export function Game() {
           Map-Guess
         </h1>
       </div>
-      <div className='w-full h-96 px-5 flex justify-center items-center'>
+      <div className='w-full h-80 px-5 flex justify-center items-center'>
         {mapCenter ? (
           <MapContainer
             center={mapCenter}
@@ -45,7 +46,7 @@ export function Game() {
             </Marker>
             {addressMarker.markerCoords && (
               <Marker position={addressMarker.markerCoords}>
-                <Popup>{addressMarker.address}</Popup>
+                <Popup>{addressMarker.address.address}</Popup>
               </Marker>
             )}
             <Map />
@@ -56,8 +57,9 @@ export function Game() {
         )}
       </div>
       <div className='w-full px-5 py-5 flex flex-col justify-center gap-5'>
-        <span className='w-fit mx-auto text-gray-900 dark:text-white'>{addressMarker.address}</span>
+        <span className='w-fit mx-auto text-gray-900 dark:text-white'>{addressMarker.address.address}</span>
         <ButtonRandomAddress bounds={cityBounds} />
+        <StreetCheckPanel />
       </div>
     </section>
   )
